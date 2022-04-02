@@ -1,0 +1,45 @@
+```java
+import com.lcsolute.entity.Video;
+import com.lcsolute.vo.HotVedioVo;
+import org.springframework.beans.BeanUtils;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class BeanCopyUtils {
+
+    private BeanCopyUtils(){}
+
+    public static <O, V> V copyBean(O source, Class<V> clazz) {
+        // 创建目标对象
+        V result = null;
+        try {
+            result = clazz.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 实现属性 copy
+        BeanUtils.copyProperties(source, result);
+
+        // 返回结果
+        return result;
+    }
+
+    public static <O, V> List<V> copyBeanList(List<O> list, Class<V> clazz) {
+        return list.stream()
+                .map( o -> copyBean(o, clazz))
+                .collect(Collectors.toList());
+    }
+
+    public static void main(String[] args) {
+        Video video = new Video();
+        video.setId(String.valueOf(1L));
+        video.setStatus(1L);
+        video.setLikeCounts(10L);
+        HotVedioVo vo = BeanCopyUtils.copyBean(video, HotVedioVo.class);
+        System.out.println(vo);
+    }
+}
+```
+
